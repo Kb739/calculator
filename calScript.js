@@ -11,6 +11,7 @@ const operation = {
     '/': divide,
     '=': equalsTo,
     'clr': clear,
+    'del': del,
 };
 
 function reset() {
@@ -70,6 +71,17 @@ function equalsTo() {
 function clear() {
     reset();
     display.textContent = '';
+}
+
+function del() {
+
+    if (bufferIndex == 2)
+        clear();
+    else if (buffer[bufferIndex]) {
+        const value = buffer[bufferIndex];
+        buffer[bufferIndex] = value.slice(0, value.length - 1);
+        display.textContent = buffer[bufferIndex];
+    }
 }
 
 function mul(a, b) {
