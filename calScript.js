@@ -1,8 +1,10 @@
 const display = document.querySelector('#display');
-const allCharacters = ['clr', 'del', '=', '/', 1, 2, 3, '*', 4, 5, 6, '-', 7, 8, 9, '+', 0, '.', '='];
+const MAX_CHARS = 11;
+const allCharacters = ['clr', 'del', '=', '/', 1, 2, 3, '*', 4, 5, 6, '-', 7, 8, 9, '+', 0, '.'];
 let buffer = ['', '', ''];
 let bufferIndex = 0;
 let op = '';
+let activeOperator = null;
 
 const operation = {
     '*': mul,
@@ -25,7 +27,7 @@ function numberInput(e) {
         reset();
     }
     let num = buffer[bufferIndex];
-    if (num.length < 12) {
+    if (num.length < MAX_CHARS) {
         num += e.target.textContent;
         buffer[bufferIndex] = num;
         display.textContent = num;
@@ -85,7 +87,8 @@ function del() {
 }
 
 function mul(a, b) {
-    return a * b;
+
+    return (a * b);
 }
 function sub(a, b) {
     return a - b;
@@ -98,7 +101,8 @@ function divide(a, b) {
 }
 
 function calculate(a, b, op) {
-    return op(+a, +b);
+    const value = op(+a, +b).toString();
+    return value.substring(0, MAX_CHARS);
 }
 
 function classify(button) {
@@ -107,13 +111,18 @@ function classify(button) {
     if (text.match(/\.|[0-9]/)) {
         button.classList.add('number');
         button.onclick = numberInput;
+        button.addEventListener('click', e => highlight(e.target));
+        button.addEventListener('transitionend', e => removeHighlight(e.target));
     }
     else if (text.match(/\+|\-|\*|\//)) {
         button.classList.add('operator');
         button.onclick = operatorInput;
+        button.addEventListener('click', e => switchOperator(e.target));
     }
     else {
         button.onclick = operation[text];
+        button.addEventListener('click', e => highlight(e.target));
+        button.addEventListener('transitionend', e => removeHighlight(e.target));
     }
 }
 
@@ -125,10 +134,37 @@ function generateButtonGrid() {
         button.classList.add('block');
         button.textContent = ele;
         classify(button);
-        grid.appendChild(button);
-    }
 
+        grid.appendChild(button);
+
+    }
 }
 
 generateButtonGrid();
 
+function highlight(target) {
+    if (activeOperator)
+        removeHighlight(activeOperator);
+
+    const style = window.getComputedStyle(target);
+    let currentColor = rgbaToArray(style.getPropertyValue('background-color'));
+    currentColor[3] = 1;           //increase alpha
+    target.style.backgroundColor = arrayToRGBA(currentColor);
+}
+
+function switchOperator(target) {
+    highlight(target);
+    activeOperator = target;
+}
+
+function removeHighlight(target) {
+    if (target.getAttribute('style').indexOf('background-color:') != -1)
+        target.style.removeProperty('background-color');
+}
+
+function rgbaToArray(color) {
+    return color.slice(color.indexOf('(') + 1, color.indexOf(')')).split(',');
+}
+function arrayToRGBA(color) {
+    return `rgba(${color.toString()})`;
+}

@@ -6,14 +6,17 @@ body {
     align-items: center;
     margin: 0;
 }
-#display{
+
+#display {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
     font-size: 80px;
 }
+
 #content {
-    background-color: grey;
+    background-color: rgba(128, 128, 128, 0.5);
+    border-radius: 10px;
     width: 500px;
     display: flex;
     flex-direction: column;
@@ -22,24 +25,28 @@ body {
 
 #display {
     background-color: white;
+    border-radius: inherit;
     flex: 1;
 }
 
 #grid {
-    background-color: red;
     flex: 4;
     display: flex;
     flex-wrap: wrap;
 }
 
 .block {
-    /* flex-grow: 1; */
+    background-color: rgba(255, 255, 255, 0.75);
     width: 25%;
-    /* 100/4  */
+    border-radius: 10px;
+    font-size: large;
+    transition: 0.5s;
 }
-.number{
-    background-color: cyan;
+
+.number {
+    background-color: rgba(0, 255, 255, 0.75);
 }
-.operator{
-background-color: yellow;
+
+.operator {
+    background-color: rgba(255, 255, 0, 0.75);
 }
